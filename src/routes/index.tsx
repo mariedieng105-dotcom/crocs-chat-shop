@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Check, Lock, Pencil, Plus, RotateCcw, Settings2 } from "lucide-react";
+import { Check, Lock, Pencil, Plus, Settings2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import logoAsset from "@/assets/logo.jpg.asset.json";
 import limeAsset from "@/assets/crocs-lime.jpg.asset.json";
@@ -9,8 +9,9 @@ import { ProductCard } from "@/components/ProductCard";
 import { ProductDetail } from "@/components/ProductDetail";
 import { ProductEditor } from "@/components/ProductEditor";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
+import { InstagramIcon, MailIcon, SnapchatIcon, TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
 import { getEditorStatus, lockEditor, unlockEditor } from "@/lib/catalog.functions";
-import { useStore, waLink, type Product } from "@/lib/store";
+import { useStore, waLink, WHATSAPP_NUMBER, type Product } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
@@ -25,13 +26,16 @@ export const Route = createFileRoute("/")({
 });
 
 const SOCIALS = [
-  { label: "TikTok", href: "https://www.tiktok.com/@crocs_dakar_221?_r=1&_t=ZS-99nMpGtSMIG" },
-  { label: "Instagram", href: "https://www.instagram.com/diaby_store_?stkn=MTR0cThuYmlmZmZzeA==" },
-  { label: "Snapchat", href: "https://www.snapchat.com/add/diaby_store?share_id=q4uMchdrSsO5Zu6Poetn5w&locale=fr_SN" },
+  { label: "WhatsApp", href: `https://wa.me/${WHATSAPP_NUMBER}`, icon: WhatsAppIcon },
+  { label: "TikTok", href: "https://www.tiktok.com/@crocs_dakar_221?_r=1&_t=ZS-99nMpGtSMIG", icon: TikTokIcon },
+  { label: "Instagram", href: "https://www.instagram.com/diaby_store_?stkn=MTR0cThuYmlmZmZzeA==", icon: InstagramIcon },
+  { label: "Snapchat", href: "https://www.snapchat.com/add/diaby_store?share_id=q4uMchdrSsO5Zu6Poetn5w&locale=fr_SN", icon: SnapchatIcon },
 ];
 
+const STORE_EMAIL = "diabystore02@gmail.com";
+
 function Index() {
-  const { data, update, reset, hydrated } = useStore();
+  const { data, update, hydrated } = useStore();
   const status = useServerFn(getEditorStatus);
   const unlock = useServerFn(unlockEditor);
   const lock = useServerFn(lockEditor);
@@ -86,7 +90,7 @@ function Index() {
         </div>
       </header>
 
-      {editMode && <div className="border-b border-orange-pop bg-orange-pop/10"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3"><p className="text-sm font-bold text-orange-pop">Mode édition partagé actif</p><div className="flex gap-2"><Button size="sm" onClick={addProduct}><Plus />Nouveau produit</Button><Button size="sm" variant="outline" onClick={reset}><RotateCcw />Réinitialiser</Button><Button size="sm" variant="outline" onClick={requestEdit}><Lock />Verrouiller</Button></div></div></div>}
+      {editMode && <div className="border-b border-orange-pop bg-orange-pop/10"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3"><p className="text-sm font-bold text-orange-pop">Mode édition partagé actif</p><div className="flex gap-2"><Button size="sm" onClick={addProduct}><Plus />Nouveau produit</Button><Button size="sm" variant="outline" onClick={requestEdit}><Lock />Verrouiller</Button></div></div></div>}
 
       <section id="accueil" className="overflow-hidden border-b border-border">
         <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-12 md:grid-cols-2 md:py-16">
@@ -103,7 +107,7 @@ function Index() {
 
       <section id="apropos" className="bg-secondary py-14"><div className="mx-auto max-w-4xl px-4 text-center"><EditableText name="aboutTitle" as="h2" className="text-3xl sm:text-4xl" /><EditableText name="aboutText" className="mx-auto mt-4 max-w-2xl text-muted-foreground" /><div className="mt-8 grid gap-4 sm:grid-cols-3">{["value1", "value2", "value3"].map((name) => <div key={name} className="border-t-4 border-primary bg-background p-5 shadow-sm"><EditableText name={name} className="font-bold" /></div>)}</div></div></section>
 
-      <footer className="bg-ink py-12 text-primary-foreground"><div className="mx-auto grid max-w-6xl gap-8 px-4 sm:grid-cols-3"><div><img src={logoAsset.url} alt="Diaby Store" className="h-14 w-14 rounded-full object-cover" /><p className="mt-3 text-sm opacity-80">{texts["footerNote"]}</p></div><div className="space-y-2 text-sm font-semibold"><p className="uppercase opacity-60">Navigation</p><a href="#accueil" className="block">Accueil</a><a href="#boutique" className="block">Boutique</a><a href="#apropos" className="block">À propos</a></div><div className="space-y-2 text-sm font-semibold"><p className="uppercase opacity-60">Suivez-nous</p>{SOCIALS.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noreferrer" className="block">{social.label}</a>)}<Button asChild className="mt-3 bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90"><a href={waLink("Bonjour Diaby Store !")} target="_blank" rel="noreferrer">WhatsApp direct</a></Button></div></div></footer>
+      <footer className="bg-ink py-12 text-primary-foreground"><div className="mx-auto grid max-w-6xl gap-8 px-4 sm:grid-cols-3"><div><img src={logoAsset.url} alt="Diaby Store" className="h-14 w-14 rounded-full object-cover" /><p className="mt-3 text-sm opacity-80">{texts["footerNote"]}</p><a href={`mailto:${STORE_EMAIL}`} className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-turquoise hover:underline"><MailIcon className="h-4 w-4" />{STORE_EMAIL}</a></div><div className="space-y-2 text-sm font-semibold"><p className="uppercase opacity-60">Navigation</p><a href="#accueil" className="block hover:text-turquoise">Accueil</a><a href="#boutique" className="block hover:text-turquoise">Boutique</a><a href="#apropos" className="block hover:text-turquoise">À propos</a></div><div className="space-y-2 text-sm font-semibold"><p className="uppercase opacity-60">Suivez-nous</p><div className="flex flex-wrap gap-3">{SOCIALS.map((social) => { const Icon = social.icon; return <a key={social.label} href={social.href} target="_blank" rel="noreferrer" aria-label={social.label} className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/10 transition hover:bg-whatsapp hover:text-white"><Icon className="h-5 w-5" /></a>; })}</div><Button asChild className="mt-3 bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90"><a href={waLink("Bonjour Diaby Store !")} target="_blank" rel="noreferrer">WhatsApp direct</a></Button></div></div><div className="mx-auto mt-8 max-w-6xl border-t border-primary-foreground/15 px-4 pt-6 text-center text-xs opacity-70">© {new Date().getFullYear()} Diaby Store · CROCS_DAKAR_221 · Tous droits réservés.</div></footer>
 
       <button type="button" onClick={requestEdit} aria-label={editMode ? "Quitter le mode édition" : "Accès édition"} title="Accès édition" className="fixed bottom-3 right-3 z-20 grid h-7 w-7 place-items-center rounded-full bg-muted text-muted-foreground opacity-20 transition hover:opacity-80 focus:opacity-80">{editMode ? <Check className="h-3.5 w-3.5" /> : <Settings2 className="h-3.5 w-3.5" />}</button>
       <WhatsAppFloat />
