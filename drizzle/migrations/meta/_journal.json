@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789854715554,
+      "tag": "0000_create_store_catalog",
+      "breakpoints": true
+    }
+  ]
+}
