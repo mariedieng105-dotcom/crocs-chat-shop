@@ -76,5 +76,5 @@ export function useStore() {
 }
 
 export function waLink(message: string) { return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`; }
-export function orderLink(name: string, size: string, color: string) { return waLink(`Bonjour, je souhaite commander le produit : ${name}, Taille : ${size}, Couleur : ${color}.`); }
+export function orderLink(product: { name: string; model: string }, size: string, color: string, quantity = 1) { return waLink(`Bonjour, je souhaite commander le produit : ${product.name}, Modèle : ${product.model}, Taille : ${size}, Couleur : ${color}, Quantité : ${quantity}.`); }
 export function formatPrice(price: number) { return `${price.toLocaleString("fr-FR")} FCFA`; }

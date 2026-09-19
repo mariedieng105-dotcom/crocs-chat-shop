@@ -59,7 +59,7 @@ export function ProductDetail({ product, onClose }: { product: Product; onClose:
               </div>
             </div>
             <Button asChild className="mt-7 h-12 w-full bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90">
-              <a href={orderLink(`${product.name} (${product.model}), Quantité : ${quantity}`, size, color)} target="_blank" rel="noreferrer">Commander sur WhatsApp</a>
+              <a href={orderLink(product, size, color, quantity)} target="_blank" rel="noreferrer">Commander sur WhatsApp</a>
             </Button>
           </div>
         </div>
