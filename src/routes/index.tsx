@@ -214,7 +214,7 @@ function Index() {
                 href="#boutique"
                 className="rounded-2xl bg-orange-pop px-6 py-3 text-sm font-bold text-white transition-transform hover:scale-[1.03]"
               >
-                {t.heroCta}
+                {t["heroCta"]}
               </a>
               <a
                 href={waLink("Bonjour Diaby Store, je veux des infos sur vos Crocs.")}
@@ -309,7 +309,7 @@ function Index() {
               loading="lazy"
               className="h-14 w-14 rounded-full object-cover"
             />
-            <p className="text-sm opacity-80">{t.footerNote}</p>
+            <p className="text-sm opacity-80">{t["footerNote"]}</p>
           </div>
           <div className="space-y-2 text-sm font-semibold">
             <p className="uppercase tracking-widest opacity-60">Navigation</p>
