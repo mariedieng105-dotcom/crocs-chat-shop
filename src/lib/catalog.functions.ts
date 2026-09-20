@@ -98,7 +98,7 @@ export const uploadProductImages = createServerFn({ method: "POST" })
       if (!match) throw new Error("Format d’image non pris en charge.");
       const ext = match[1] === "jpeg" ? "jpg" : match[1];
       const key = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
-      const bytes = Buffer.from(match[2], "base64");
+      const bytes = Buffer.from(match[2] as string, "base64");
       const { error } = await supabaseAdmin.storage.from(IMAGE_BUCKET).upload(key, bytes, { contentType: `image/${match[1]}`, cacheControl: "31536000" });
       if (error) throw new Error("Impossible d’envoyer la photo.");
       urls.push(`/api/public/catalog-image/${key}`);
