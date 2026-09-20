@@ -28,7 +28,7 @@ export function ProductEditor({ initial, onSave, onClose }: { initial: Product; 
         reader.onerror = () => reject(new Error("read"));
         reader.readAsDataURL(file);
       })));
-      const { urls } = await upload({ data: { files: dataUrls.map((dataUrl, i) => ({ name: files[i].name, dataUrl })) } });
+      const { urls } = await upload({ data: { files: dataUrls.map((dataUrl, i) => ({ name: files[i]?.name ?? `photo-${i}.jpg`, dataUrl })) } });
       const images = [...(product.images ?? []), ...urls];
       set({ image: product.images?.length ? product.image : (urls[0] ?? product.image), images });
     } catch {
@@ -53,11 +53,18 @@ export function ProductEditor({ initial, onSave, onClose }: { initial: Product; 
           <label className={labelCls}>Prix (FCFA)<input type="number" className={field} value={product.price} onChange={(e) => set({ price: Number(e.target.value) })} /></label>
           <label className={labelCls}>Pointures (séparées par des virgules)<input className={field} value={product.sizes.join(", ")} onChange={(e) => set({ sizes: e.target.value.split(",").map((value) => value.trim()).filter(Boolean) })} /></label>
           <label className={labelCls}>Couleurs (séparées par des virgules)<input className={field} value={product.colors.join(", ")} onChange={(e) => set({ colors: e.target.value.split(",").map((value) => value.trim()).filter(Boolean) })} /></label>
-          <label className={labelCls}>Photos sous différents angles<input type="file" accept="image/*" multiple onChange={onImages} className={field} /></label>
-          <div className="grid grid-cols-5 gap-2">{(product.images ?? [product.image]).map((image, index) => <img key={`${image}-${index}`} src={image} alt={`Vue ${index + 1}`} className="aspect-square w-full object-cover" />)}</div>
-          <p className="flex items-center gap-2 text-xs text-muted-foreground"><Images className="h-4 w-4" />Sélectionnez plusieurs photos en une fois.</p>
+          <label className={labelCls}>Photos sous différents angles<input type="file" accept="image/*" multiple onChange={onImages} disabled={uploading} className={field} /></label>
+          {uploading && <p className="flex items-center gap-2 text-xs font-semibold text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" />Envoi des photos…</p>}
+          {uploadError && <p className="text-xs font-semibold text-destructive">Envoi impossible, réessayez.</p>}
+          <div className="grid grid-cols-5 gap-2">{(product.images ?? [product.image]).map((image, index) => (
+            <div key={`${image}-${index}`} className="relative">
+              <img src={image} alt={`Vue ${index + 1}`} className="aspect-square w-full object-cover" />
+              <button type="button" onClick={() => removeImage(index)} aria-label={`Retirer la vue ${index + 1}`} className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-foreground/70 text-background"><X className="h-3 w-3" /></button>
+            </div>
+          ))}</div>
+          <p className="flex items-center gap-2 text-xs text-muted-foreground"><Images className="h-4 w-4" />Ajoutez autant de photos que vous voulez, en une ou plusieurs fois.</p>
         </div>
-        <div className="mt-5 flex gap-2"><Button onClick={() => onSave(product)} className="flex-1">Enregistrer</Button><Button variant="outline" onClick={onClose}>Annuler</Button></div>
+        <div className="mt-5 flex gap-2"><Button onClick={() => onSave(product)} disabled={uploading} className="flex-1">Enregistrer</Button><Button variant="outline" onClick={onClose}>Annuler</Button></div>
       </div>
     </div>
   );
