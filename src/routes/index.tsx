@@ -101,8 +101,12 @@ function Index() {
 
       <section id="boutique" className="mx-auto max-w-6xl px-4 py-12">
         <EditableText name="shopTitle" as="h2" className="text-3xl sm:text-4xl" /><EditableText name="shopSubtitle" className="mt-2 text-muted-foreground" />
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{hydrated && data.products.map((product) => <ProductCard key={product.id} product={product} editMode={editMode} onOpen={() => setSelected(product)} onEdit={() => setEditing(product)} onDelete={() => update((current) => ({ ...current, products: current.products.filter((item) => item.id !== product.id) }))} />)}</div>
-        {hydrated && data.products.length === 0 && <p className="mt-8 text-center text-muted-foreground">Aucun produit pour le moment.</p>}
+        <div className="relative mt-6 max-w-md">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Rechercher un modèle, une couleur, une pointure…" aria-label="Rechercher un produit" className="h-11 w-full border border-input bg-background pl-9 pr-3 text-sm text-foreground" />
+        </div>
+        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{hydrated && visibleProducts.map((product) => <ProductCard key={product.id} product={product} editMode={editMode} onOpen={() => setSelected(product)} onEdit={() => setEditing(product)} onDelete={() => update((current) => ({ ...current, products: current.products.filter((item) => item.id !== product.id) }))} />)}</div>
+        {hydrated && visibleProducts.length === 0 && <p className="mt-8 text-center text-muted-foreground">{data.products.length === 0 ? "Aucun produit pour le moment." : `Aucun résultat pour « ${search} ».`}</p>}
       </section>
 
       <section id="apropos" className="bg-secondary py-14"><div className="mx-auto max-w-4xl px-4 text-center"><EditableText name="aboutTitle" as="h2" className="text-3xl sm:text-4xl" /><EditableText name="aboutText" className="mx-auto mt-4 max-w-2xl text-muted-foreground" /><div className="mt-8 grid gap-4 sm:grid-cols-3">{["value1", "value2", "value3"].map((name) => <div key={name} className="border-t-4 border-primary bg-background p-5 shadow-sm"><EditableText name={name} className="font-bold" /></div>)}</div></div></section>
