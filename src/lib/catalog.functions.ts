@@ -94,12 +94,18 @@ export const uploadProductImages = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const urls: string[] = [];
     for (const file of data.files) {
-      const match = /^data:image\/(png|jpeg|jpg|webp|gif);base64,(.+)$/.exec(file.dataUrl);
+      const match = /^data:([^;,]*);base64,(.+)$/.exec(file.dataUrl);
       if (!match) throw new Error("Format d’image non pris en charge.");
-      const ext = match[1] === "jpeg" ? "jpg" : match[1];
+      let mime = (match[1] ?? "").toLowerCase();
+      if (!mime.startsWith("image/")) {
+        const nameExt = file.name.split(".").pop()?.toLowerCase() ?? "";
+        mime = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", gif: "image/gif" }[nameExt] ?? "";
+      }
+      if (!/^image\/(png|jpeg|jpg|webp|gif)$/.test(mime)) throw new Error("Format d’image non pris en charge.");
+      const ext = mime.split("/")[1] === "jpeg" ? "jpg" : mime.split("/")[1]!;
       const key = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
       const bytes = Buffer.from(match[2] as string, "base64");
-      const { error } = await supabaseAdmin.storage.from(IMAGE_BUCKET).upload(key, bytes, { contentType: `image/${match[1]}`, cacheControl: "31536000" });
+      const { error } = await supabaseAdmin.storage.from(IMAGE_BUCKET).upload(key, bytes, { contentType: mime, cacheControl: "31536000" });
       if (error) { console.error("[upload]", error); throw new Error(`Impossible d’envoyer la photo. (${error.message})`); }
       urls.push(`/api/public/catalog-image/${key}`);
     }
