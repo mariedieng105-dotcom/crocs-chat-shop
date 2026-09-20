@@ -58,7 +58,8 @@ export function ProductDetail({ product, onClose }: { product: Product; onClose:
                 </div>
               </div>
             </div>
-            <Button asChild className="mt-7 h-12 w-full bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90">
+            <p className="mt-6 flex items-center justify-between border-t border-border pt-4 text-sm font-bold uppercase text-muted-foreground">Total<span className="text-xl font-extrabold text-orange-pop">{formatPrice(product.price * quantity)}</span></p>
+            <Button asChild className="mt-4 h-12 w-full bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90">
               <a href={orderLink(product, size, color, quantity)} target="_blank" rel="noreferrer">Commander sur WhatsApp</a>
             </Button>
           </div>
