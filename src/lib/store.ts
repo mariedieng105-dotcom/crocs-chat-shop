@@ -103,5 +103,8 @@ export function useStore() {
 }
 
 export function waLink(message: string) { return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`; }
-export function orderLink(product: { name: string; model: string }, size: string, color: string, quantity = 1) { return waLink(`Bonjour, je souhaite commander le produit : ${product.name}, Modèle : ${product.model}, Taille : ${size}, Couleur : ${color}, Quantité : ${quantity}.`); }
+export function orderLink(product: { name: string; model: string; price: number }, size: string, color: string, quantity = 1) {
+  const total = product.price * quantity;
+  return waLink(`Bonjour, je souhaite commander le produit : ${product.name}, Modèle : ${product.model}, Taille : ${size}, Couleur : ${color}, Quantité : ${quantity}, Prix unitaire : ${formatPrice(product.price)}, Total à payer : ${formatPrice(total)}.`);
+}
 export function formatPrice(price: number) { return `${price.toLocaleString("fr-FR")} FCFA`; }
