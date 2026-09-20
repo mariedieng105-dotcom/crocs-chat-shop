@@ -51,8 +51,8 @@ export function ProductEditor({ initial, onSave, onClose }: { initial: Product; 
           <label className={labelCls}>Nom<input className={field} value={product.name} onChange={(e) => set({ name: e.target.value })} /></label>
           <label className={labelCls}>Modèle<input className={field} value={product.model} onChange={(e) => set({ model: e.target.value })} /></label>
           <label className={labelCls}>Prix (FCFA)<input type="number" className={field} value={product.price} onChange={(e) => set({ price: Number(e.target.value) })} /></label>
-          <label className={labelCls}>Pointures (séparées par des virgules)<input className={field} value={product.sizes.join(", ")} onChange={(e) => set({ sizes: e.target.value.split(",").map((value) => value.trim()).filter(Boolean) })} /></label>
-          <label className={labelCls}>Couleurs (séparées par des virgules)<input className={field} value={product.colors.join(", ")} onChange={(e) => set({ colors: e.target.value.split(",").map((value) => value.trim()).filter(Boolean) })} /></label>
+          <label className={labelCls}>Pointures (séparées par des points-virgules ou virgules)<input className={field} value={product.sizes.join(" ; ")} onChange={(e) => set({ sizes: e.target.value.split(/[;,]/).map((value) => value.trim()).filter(Boolean) })} /></label>
+          <label className={labelCls}>Couleurs (séparées par des points-virgules ou virgules)<input className={field} value={product.colors.join(" ; ")} onChange={(e) => set({ colors: e.target.value.split(/[;,]/).map((value) => value.trim()).filter(Boolean) })} /></label>
           <label className={labelCls}>Photos sous différents angles<input type="file" accept="image/*" multiple onChange={onImages} disabled={uploading} className={field} /></label>
           {uploading && <p className="flex items-center gap-2 text-xs font-semibold text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" />Envoi des photos…</p>}
           {uploadError && <p className="text-xs font-semibold text-destructive">Envoi impossible, réessayez.</p>}
