@@ -81,3 +81,27 @@ export const saveCatalog = createServerFn({ method: "POST" })
     if (error) throw new Error("Impossible d’enregistrer les changements.");
     return { ok: true as const };
   });
+
+export const IMAGE_BUCKET = "catalog-images";
+
+export const uploadProductImages = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({
+    files: z.array(z.object({ name: z.string().max(200), dataUrl: z.string().max(15_000_000) })).min(1).max(20),
+  }).parse(input))
+  .handler(async ({ data }) => {
+    const session = await editorSession();
+    if (!session.data.unlocked) throw new Error("Accès refusé.");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const urls: string[] = [];
+    for (const file of data.files) {
+      const match = /^data:image\/(png|jpeg|jpg|webp|gif);base64,(.+)$/.exec(file.dataUrl);
+      if (!match) throw new Error("Format d’image non pris en charge.");
+      const ext = match[1] === "jpeg" ? "jpg" : match[1];
+      const key = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
+      const bytes = Buffer.from(match[2], "base64");
+      const { error } = await supabaseAdmin.storage.from(IMAGE_BUCKET).upload(key, bytes, { contentType: `image/${match[1]}`, cacheControl: "31536000" });
+      if (error) throw new Error("Impossible d’envoyer la photo.");
+      urls.push(`/api/public/catalog-image/${key}`);
+    }
+    return { urls };
+  });
