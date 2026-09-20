@@ -83,6 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Diaby Store · Crocs à Dakar" },
       { property: "og:description", content: "Crocs authentiques pour toute la famille à Dakar — commande sur WhatsApp." },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "CrocsDakar 221" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
     ],

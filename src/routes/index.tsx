@@ -14,14 +14,31 @@ import { getEditorStatus, lockEditor, unlockEditor } from "@/lib/catalog.functio
 import { useStore, waLink, WHATSAPP_NUMBER, type Product } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [
-    { title: "Diaby Store · Crocs authentiques à Dakar" },
-    { name: "description", content: "Diaby Store : Crocs authentiques à Dakar. Découvrez chaque modèle sous plusieurs angles et commandez directement sur WhatsApp." },
-    { property: "og:title", content: "Diaby Store · Crocs authentiques à Dakar" },
-    { property: "og:description", content: "Confort, style et couleurs. Commandez vos Crocs directement sur WhatsApp." },
-    { property: "og:type", content: "website" },
-    { name: "twitter:card", content: "summary_large_image" },
-  ] }),
+  head: () => ({
+    meta: [
+      { title: "CrocsDakar 221 · Diaby Store — Crocs authentiques à Dakar" },
+      { name: "description", content: "CrocsDakar 221 (Diaby Store) : Crocs authentiques pour toute la famille à Dakar, Sénégal. Découvrez chaque modèle sous plusieurs angles et commandez directement sur WhatsApp." },
+      { property: "og:title", content: "CrocsDakar 221 · Diaby Store — Crocs authentiques à Dakar" },
+      { property: "og:description", content: "Crocs authentiques à Dakar. Confort, style et couleurs — commandez directement sur WhatsApp." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://crocs-chat-shop.lovable.app/" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "https://crocs-chat-shop.lovable.app/" }],
+    scripts: [{
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "CrocsDakar 221",
+        alternateName: ["Diaby Store", "CROCS_DAKAR_221"],
+        url: "https://crocs-chat-shop.lovable.app/",
+        description: "Crocs authentiques pour toute la famille à Dakar, Sénégal — commande directe sur WhatsApp.",
+        address: { "@type": "PostalAddress", addressLocality: "Dakar", addressCountry: "SN" },
+        contactPoint: { "@type": "ContactPoint", telephone: "+221783817581", contactType: "sales" },
+      }),
+    }],
+  }),
   component: Index,
 });
 
