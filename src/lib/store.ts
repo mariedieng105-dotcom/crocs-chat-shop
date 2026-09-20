@@ -45,6 +45,17 @@ export const defaultData: StoreData = {
   ],
 };
 
+function splitValues(values: string[]) {
+  return values.flatMap((value) => value.split(/[;,]/).map((part) => part.trim())).filter(Boolean);
+}
+
+function normalizeCatalog(data: StoreData): StoreData {
+  return {
+    ...data,
+    products: data.products.map((product) => ({ ...product, sizes: splitValues(product.sizes ?? []), colors: splitValues(product.colors ?? []) })),
+  };
+}
+
 export function useStore() {
   const [data, setData] = useState<StoreData>(defaultData);
   const [hydrated, setHydrated] = useState(false);
@@ -57,13 +68,13 @@ export function useStore() {
     if (pending.current > 0) return;
     const stored = await fetchCatalog();
     if (pending.current > 0) return;
-    if (stored) setData(stored as StoreData);
+    if (stored) setData(normalizeCatalog(stored as StoreData));
   }, [fetchCatalog]);
 
   useEffect(() => {
     let active = true;
     fetchCatalog().then((stored) => {
-      if (active && stored) setData(stored as StoreData);
+      if (active && stored) setData(normalizeCatalog(stored as StoreData));
     }).finally(() => { if (active) setHydrated(true); });
     return () => { active = false; };
   }, [fetchCatalog]);
