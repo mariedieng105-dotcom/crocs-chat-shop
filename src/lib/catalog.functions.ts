@@ -100,7 +100,7 @@ export const uploadProductImages = createServerFn({ method: "POST" })
       const key = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
       const bytes = Buffer.from(match[2] as string, "base64");
       const { error } = await supabaseAdmin.storage.from(IMAGE_BUCKET).upload(key, bytes, { contentType: `image/${match[1]}`, cacheControl: "31536000" });
-      if (error) throw new Error("Impossible d’envoyer la photo.");
+      if (error) { console.error("[upload]", error); throw new Error(`Impossible d’envoyer la photo. (${error.message})`); }
       urls.push(`/api/public/catalog-image/${key}`);
     }
     return { urls };
