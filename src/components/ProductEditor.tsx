@@ -1,6 +1,8 @@
 import { useState, type ChangeEvent } from "react";
-import { Images, X } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Images, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { uploadProductImages } from "@/lib/catalog.functions";
 import type { Product } from "@/lib/store";
 
 const field = "mt-1 w-full border border-input bg-background px-3 py-2 text-sm text-foreground";
@@ -8,16 +10,37 @@ const labelCls = "block text-xs font-semibold uppercase text-muted-foreground";
 
 export function ProductEditor({ initial, onSave, onClose }: { initial: Product; onSave: (product: Product) => void; onClose: () => void }) {
   const [product, setProduct] = useState(initial);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState(false);
+  const upload = useServerFn(uploadProductImages);
   const set = (patch: Partial<Product>) => setProduct((current) => ({ ...current, ...patch }));
 
-  const onImages = (event: ChangeEvent<HTMLInputElement>) => {
+  const onImages = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
+    event.target.value = "";
     if (!files.length) return;
-    Promise.all(files.map((file) => new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.readAsDataURL(file);
-    }))).then((images) => set({ image: images[0] ?? product.image, images }));
+    setUploading(true);
+    setUploadError(false);
+    try {
+      const dataUrls = await Promise.all(files.map((file) => new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error("read"));
+        reader.readAsDataURL(file);
+      })));
+      const { urls } = await upload({ data: { files: dataUrls.map((dataUrl, i) => ({ name: files[i].name, dataUrl })) } });
+      const images = [...(product.images ?? []), ...urls];
+      set({ image: product.images?.length ? product.image : (urls[0] ?? product.image), images });
+    } catch {
+      setUploadError(true);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    const images = (product.images ?? [product.image]).filter((_, i) => i !== index);
+    set({ images, image: images[0] ?? product.image });
   };
 
   return (
