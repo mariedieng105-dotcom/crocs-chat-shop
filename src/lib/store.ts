@@ -68,13 +68,13 @@ export function useStore() {
     if (pending.current > 0) return;
     const stored = await fetchCatalog();
     if (pending.current > 0) return;
-    if (stored) setData(stored as StoreData);
+    if (stored) setData(normalizeCatalog(stored as StoreData));
   }, [fetchCatalog]);
 
   useEffect(() => {
     let active = true;
     fetchCatalog().then((stored) => {
-      if (active && stored) setData(stored as StoreData);
+      if (active && stored) setData(normalizeCatalog(stored as StoreData));
     }).finally(() => { if (active) setHydrated(true); });
     return () => { active = false; };
   }, [fetchCatalog]);
