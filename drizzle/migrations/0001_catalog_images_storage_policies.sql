@@ -1,0 +1,2 @@
+create policy "Catalog images public read" on storage.objects for select to anon, authenticated using (bucket_id = 'catalog-images');
+create policy "Catalog images insert" on storage.objects for insert to anon, authenticated with check (bucket_id = 'catalog-images');
