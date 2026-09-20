@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import limeAsset from "@/assets/crocs-lime.jpg.asset.json";
 import pinkAsset from "@/assets/crocs-pink.jpg.asset.json";
@@ -48,8 +48,17 @@ export const defaultData: StoreData = {
 export function useStore() {
   const [data, setData] = useState<StoreData>(defaultData);
   const [hydrated, setHydrated] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const pending = useRef(0);
   const fetchCatalog = useServerFn(getCatalog);
   const persistCatalog = useServerFn(saveCatalog);
+
+  const refresh = useCallback(async () => {
+    if (pending.current > 0) return;
+    const stored = await fetchCatalog();
+    if (pending.current > 0) return;
+    if (stored) setData(stored as StoreData);
+  }, [fetchCatalog]);
 
   useEffect(() => {
     let active = true;
@@ -59,20 +68,38 @@ export function useStore() {
     return () => { active = false; };
   }, [fetchCatalog]);
 
-  const update = useCallback((next: StoreData | ((current: StoreData) => StoreData)) => {
-    setData((current) => {
-      const value = typeof next === "function" ? next(current) : next;
-      void persistCatalog({ data: value });
-      return value;
+  // Synchronisation en direct pour tous les visiteurs
+  useEffect(() => {
+    const tick = () => { if (document.visibilityState === "visible") void refresh(); };
+    const timer = window.setInterval(tick, 5000);
+    window.addEventListener("focus", tick);
+    document.addEventListener("visibilitychange", tick);
+    return () => { window.clearInterval(timer); window.removeEventListener("focus", tick); document.removeEventListener("visibilitychange", tick); };
+  }, [refresh]);
+
+  const persist = useCallback((value: StoreData) => {
+    pending.current += 1;
+    setSaving(true);
+    void persistCatalog({ data: value }).finally(() => {
+      pending.current -= 1;
+      if (pending.current === 0) setSaving(false);
     });
   }, [persistCatalog]);
 
+  const update = useCallback((next: StoreData | ((current: StoreData) => StoreData)) => {
+    setData((current) => {
+      const value = typeof next === "function" ? next(current) : next;
+      persist(value);
+      return value;
+    });
+  }, [persist]);
+
   const reset = useCallback(() => {
     setData(defaultData);
-    void persistCatalog({ data: defaultData });
-  }, [persistCatalog]);
+    persist(defaultData);
+  }, [persist]);
 
-  return { data, update, reset, hydrated };
+  return { data, update, reset, hydrated, saving, refresh };
 }
 
 export function waLink(message: string) { return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`; }
