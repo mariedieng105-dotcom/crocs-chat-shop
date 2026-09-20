@@ -45,6 +45,17 @@ export const defaultData: StoreData = {
   ],
 };
 
+function splitValues(values: string[]) {
+  return values.flatMap((value) => value.split(/[;,]/).map((part) => part.trim())).filter(Boolean);
+}
+
+function normalizeCatalog(data: StoreData): StoreData {
+  return {
+    ...data,
+    products: data.products.map((product) => ({ ...product, sizes: splitValues(product.sizes ?? []), colors: splitValues(product.colors ?? []) })),
+  };
+}
+
 export function useStore() {
   const [data, setData] = useState<StoreData>(defaultData);
   const [hydrated, setHydrated] = useState(false);
