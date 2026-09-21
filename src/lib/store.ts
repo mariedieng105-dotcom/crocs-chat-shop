@@ -59,13 +59,15 @@ function splitValues(values: string[]) {
 function normalizeCatalog(data: StoreData): StoreData {
   return {
     ...data,
-    products: data.products.map((product) => ({
-      ...product,
-      sizes: splitValues(product.sizes ?? []),
-      colors: splitValues(product.colors ?? []),
-      image: resolveImageUrl(product.image),
-      images: product.images?.map(resolveImageUrl),
-    })),
+    products: data.products.map((product) => {
+      const normalized = {
+        ...product,
+        sizes: splitValues(product.sizes ?? []),
+        colors: splitValues(product.colors ?? []),
+        image: resolveImageUrl(product.image),
+      };
+      return product.images ? { ...normalized, images: product.images.map(resolveImageUrl) } : normalized;
+    }),
   };
 }
 
