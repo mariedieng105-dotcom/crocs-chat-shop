@@ -5,6 +5,7 @@ import pinkAsset from "@/assets/crocs-pink.jpg.asset.json";
 import navyAsset from "@/assets/crocs-navy.jpg.asset.json";
 import kidsAsset from "@/assets/crocs-kids.jpg.asset.json";
 import { getCatalog, saveCatalog } from "@/lib/catalog.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const WHATSAPP_NUMBER = "221783817581";
 export const IMAGE_ORIGIN = "https://crocs-chat-shop.lovable.app";
@@ -94,10 +95,27 @@ export function useStore() {
     return () => { active = false; };
   }, [fetchCatalog]);
 
-  // Synchronisation en direct pour tous les visiteurs
+  // Synchronisation en direct (temps réel) pour tous les visiteurs
+  useEffect(() => {
+    const channel = supabase
+      .channel("store-catalog")
+      .on("postgres_changes", { event: "*", schema: "public", table: "store_catalog" }, (payload) => {
+        const row = (payload.new ?? null) as { id?: string; data?: StoreData } | null;
+        if (row?.id === "main" && row.data) {
+          if (pending.current > 0) return;
+          setData(normalizeCatalog(row.data));
+        } else {
+          void refresh();
+        }
+      })
+      .subscribe();
+    return () => { void supabase.removeChannel(channel); };
+  }, [refresh]);
+
+  // Filet de sécurité si la connexion temps réel est coupée
   useEffect(() => {
     const tick = () => { if (document.visibilityState === "visible") void refresh(); };
-    const timer = window.setInterval(tick, 5000);
+    const timer = window.setInterval(tick, 15000);
     window.addEventListener("focus", tick);
     document.addEventListener("visibilitychange", tick);
     return () => { window.clearInterval(timer); window.removeEventListener("focus", tick); document.removeEventListener("visibilitychange", tick); };

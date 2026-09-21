@@ -22,6 +22,13 @@
       "when": 1789935421250,
       "tag": "0002_lock_down_catalog_images_storage",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790004833960,
+      "tag": "0003_enable_realtime_store_catalog",
+      "breakpoints": true
     }
   ]
 }
