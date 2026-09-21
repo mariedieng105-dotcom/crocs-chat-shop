@@ -7,6 +7,13 @@ import kidsAsset from "@/assets/crocs-kids.jpg.asset.json";
 import { getCatalog, saveCatalog } from "@/lib/catalog.functions";
 
 export const WHATSAPP_NUMBER = "221783817581";
+export const IMAGE_ORIGIN = "https://crocs-chat-shop.lovable.app";
+
+export function resolveImageUrl(url: string) {
+  if (!url || /^https?:\/\//i.test(url) || url.startsWith("data:") || url.startsWith("blob:")) return url;
+  if (url.startsWith("/__l5e/assets-v1/") || url.startsWith("/api/public/catalog-image/")) return `${IMAGE_ORIGIN}${url}`;
+  return url;
+}
 
 export type Product = {
   id: string;
@@ -52,7 +59,15 @@ function splitValues(values: string[]) {
 function normalizeCatalog(data: StoreData): StoreData {
   return {
     ...data,
-    products: data.products.map((product) => ({ ...product, sizes: splitValues(product.sizes ?? []), colors: splitValues(product.colors ?? []) })),
+    products: data.products.map((product) => {
+      const normalized = {
+        ...product,
+        sizes: splitValues(product.sizes ?? []),
+        colors: splitValues(product.colors ?? []),
+        image: resolveImageUrl(product.image),
+      };
+      return product.images ? { ...normalized, images: product.images.map(resolveImageUrl) } : normalized;
+    }),
   };
 }
 

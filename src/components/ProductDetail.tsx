@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatPrice, orderLink, type Product } from "@/lib/store";
+import { formatPrice, orderLink, resolveImageUrl, type Product } from "@/lib/store";
 
 export function ProductDetail({ product, onClose }: { product: Product; onClose: () => void }) {
   const gallery = product.images?.length ? product.images : [product.image];
@@ -19,12 +19,12 @@ export function ProductDetail({ product, onClose }: { product: Product; onClose:
               <Button variant="ghost" size="icon" onClick={onClose} aria-label="Fermer"><X /></Button>
             </div>
             <div className="aspect-square overflow-hidden bg-background">
-              <img src={active} alt={`${product.name}, vue sélectionnée`} className="h-full w-full object-contain" />
+              <img src={resolveImageUrl(active)} alt={`${product.name}, vue sélectionnée`} className="h-full w-full object-contain" />
             </div>
             <div className="mt-3 grid grid-cols-5 gap-2">
               {gallery.map((image, index) => (
                 <button key={`${image}-${index}`} type="button" onClick={() => setActive(image)} aria-label={`Vue ${index + 1}`} className={`aspect-square overflow-hidden border-2 bg-background ${active === image ? "border-primary" : "border-border"}`}>
-                  <img src={image} alt="" className="h-full w-full object-cover" />
+                  <img src={resolveImageUrl(image)} alt="" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>

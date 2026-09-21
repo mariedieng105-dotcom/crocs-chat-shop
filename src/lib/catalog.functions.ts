@@ -83,6 +83,7 @@ export const saveCatalog = createServerFn({ method: "POST" })
   });
 
 export const IMAGE_BUCKET = "catalog-images";
+const PUBLIC_IMAGE_ORIGIN = "https://crocs-chat-shop.lovable.app";
 
 export const uploadProductImages = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({
@@ -107,7 +108,7 @@ export const uploadProductImages = createServerFn({ method: "POST" })
       const bytes = Buffer.from(match[2] as string, "base64");
       const { error } = await supabaseAdmin.storage.from(IMAGE_BUCKET).upload(key, bytes, { contentType: mime, cacheControl: "31536000" });
       if (error) { console.error("[upload]", error); throw new Error(`Impossible d’envoyer la photo. (${error.message})`); }
-      urls.push(`/api/public/catalog-image/${key}`);
+      urls.push(`${PUBLIC_IMAGE_ORIGIN}/api/public/catalog-image/${key}`);
     }
     return { urls };
   });
