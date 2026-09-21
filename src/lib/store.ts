@@ -5,6 +5,7 @@ import pinkAsset from "@/assets/crocs-pink.jpg.asset.json";
 import navyAsset from "@/assets/crocs-navy.jpg.asset.json";
 import kidsAsset from "@/assets/crocs-kids.jpg.asset.json";
 import { getCatalog, saveCatalog } from "@/lib/catalog.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const WHATSAPP_NUMBER = "221783817581";
 export const IMAGE_ORIGIN = "https://crocs-chat-shop.lovable.app";
