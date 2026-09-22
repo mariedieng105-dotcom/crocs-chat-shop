@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, Lock, Plus, Search, Settings2 } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
 import logoAsset from "@/assets/logo.jpg.asset.json";
 import limeAsset from "@/assets/crocs-lime.jpg.asset.json";
 import { Button } from "@/components/ui/button";
@@ -10,8 +9,10 @@ import { ProductDetail } from "@/components/ProductDetail";
 import { ProductEditor } from "@/components/ProductEditor";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { InstagramIcon, MailIcon, SnapchatIcon, TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
-import { getEditorStatus, lockEditor, unlockEditor } from "@/lib/catalog.functions";
+import { supabase } from "@/integrations/supabase/client";
+import { clearEditorPassword, getEditorPassword, setEditorPassword } from "@/lib/editor-session";
 import { resolveImageUrl, useStore, waLink, WHATSAPP_NUMBER, type Product } from "@/lib/store";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
