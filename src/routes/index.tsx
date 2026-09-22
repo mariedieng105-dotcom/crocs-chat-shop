@@ -60,6 +60,8 @@ function Index() {
   const [showUnlock, setShowUnlock] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+  const [serverError, setServerError] = useState("");
+
   const [editing, setEditing] = useState<Product | null>(null);
   const [selected, setSelected] = useState<Product | null>(null);
   const [search, setSearch] = useState("");
@@ -69,7 +71,12 @@ function Index() {
     ? data.products.filter((product) => [product.name, product.model, ...product.colors, ...product.sizes, String(product.price)].join(" ").toLowerCase().includes(query))
     : data.products;
 
-  useEffect(() => { status().then(({ unlocked }) => setEditMode(unlocked)); }, [status]);
+  useEffect(() => { status().then(({ unlocked }) => setEditMode(unlocked)).catch(() => {}); }, [status]);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("admin") === "1" || window.location.hash === "#admin") setShowUnlock(true);
+  }, []);
 
   const requestEdit = async () => {
     if (editMode) {
@@ -82,13 +89,19 @@ function Index() {
 
   const submitPassword = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const result = await unlock({ data: { password } });
-    if (!result.ok) { setPasswordError(true); return; }
-    setPassword("");
-    setPasswordError(false);
-    setShowUnlock(false);
-    setEditMode(true);
+    setServerError("");
+    try {
+      const result = await unlock({ data: { password } });
+      if (!result.ok) { setPasswordError(true); return; }
+      setPassword("");
+      setPasswordError(false);
+      setShowUnlock(false);
+      setEditMode(true);
+    } catch {
+      setServerError("Le mode édition n’est disponible que sur le site Lovable (crocs-chat-shop.lovable.app).");
+    }
   };
+
 
   const setText = (key: string, value: string) => update((current) => ({ ...current, texts: { ...current.texts, [key]: value } }));
   const saveProduct = (product: Product) => {
@@ -138,7 +151,7 @@ function Index() {
       <button type="button" onClick={requestEdit} aria-label={editMode ? "Verrouiller l'édition" : "Accès édition"} title={editMode ? "Verrouiller l'édition" : "Accès édition"} className="fixed bottom-24 right-3 z-40 grid h-8 w-8 place-items-center rounded-full bg-muted text-muted-foreground opacity-30 transition hover:opacity-90 focus:opacity-90">{editMode ? <Lock className="h-4 w-4" /> : <Settings2 className="h-4 w-4" />}</button>
       <WhatsAppFloat />
 
-      {showUnlock && <div className="fixed inset-0 z-50 grid place-items-center bg-foreground/60 px-4"><form onSubmit={submitPassword} className="w-full max-w-sm bg-background p-6 shadow-xl"><div className="flex items-center gap-2"><Lock className="h-5 w-5" /><h2 className="text-xl">Accès édition</h2></div><label className="mt-5 block text-sm font-semibold">Mot de passe<input autoFocus type="password" value={password} onChange={(event) => { setPassword(event.target.value); setPasswordError(false); }} className="mt-2 h-11 w-full border border-input bg-background px-3" /></label>{passwordError && <p className="mt-2 text-sm text-destructive">Mot de passe incorrect.</p>}<div className="mt-5 flex gap-2"><Button type="submit" className="flex-1">Déverrouiller</Button><Button type="button" variant="outline" onClick={() => setShowUnlock(false)}>Annuler</Button></div></form></div>}
+      {showUnlock && <div className="fixed inset-0 z-50 grid place-items-center bg-foreground/60 px-4"><form onSubmit={submitPassword} className="w-full max-w-sm bg-background p-6 shadow-xl"><div className="flex items-center gap-2"><Lock className="h-5 w-5" /><h2 className="text-xl">Accès édition</h2></div><label className="mt-5 block text-sm font-semibold">Mot de passe<input autoFocus type="password" value={password} onChange={(event) => { setPassword(event.target.value); setPasswordError(false); setServerError(""); }} className="mt-2 h-11 w-full border border-input bg-background px-3" /></label>{passwordError && <p className="mt-2 text-sm text-destructive">Mot de passe incorrect.</p>}{serverError && <p className="mt-2 text-sm text-destructive">{serverError}</p>}<div className="mt-5 flex gap-2"><Button type="submit" className="flex-1">Déverrouiller</Button><Button type="button" variant="outline" onClick={() => setShowUnlock(false)}>Annuler</Button></div></form></div>}
       {editing && <ProductEditor initial={editing} onSave={saveProduct} onClose={() => setEditing(null)} />}
       {selected && <ProductDetail product={selected} onClose={() => setSelected(null)} />}
     </div>
