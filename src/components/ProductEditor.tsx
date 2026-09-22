@@ -1,19 +1,28 @@
 import { useState, type ChangeEvent } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { Images, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { uploadProductImages } from "@/lib/catalog.functions";
-import { resolveImageUrl, type Product } from "@/lib/store";
+import { getEditorPassword } from "@/lib/editor-session";
+import { IMAGE_ORIGIN, resolveImageUrl, type Product } from "@/lib/store";
 
 const field = "mt-1 w-full border border-input bg-background px-3 py-2 text-sm text-foreground";
 const labelCls = "block text-xs font-semibold uppercase text-muted-foreground";
+
+async function uploadImages(files: { name: string; dataUrl: string }[]) {
+  const response = await fetch(`${IMAGE_ORIGIN}/api/public/upload-catalog-image`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: getEditorPassword(), files }),
+  });
+  if (!response.ok) throw new Error("upload");
+  return (await response.json()) as { urls: string[] };
+}
 
 export function ProductEditor({ initial, onSave, onClose }: { initial: Product; onSave: (product: Product) => void; onClose: () => void }) {
   const [product, setProduct] = useState(initial);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(false);
-  const upload = useServerFn(uploadProductImages);
   const set = (patch: Partial<Product>) => setProduct((current) => ({ ...current, ...patch }));
+
 
   const onImages = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
