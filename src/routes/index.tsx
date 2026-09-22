@@ -54,9 +54,6 @@ const STORE_EMAIL = "diabystore02@gmail.com";
 
 function Index() {
   const { data, update, hydrated } = useStore();
-  const status = useServerFn(getEditorStatus);
-  const unlock = useServerFn(unlockEditor);
-  const lock = useServerFn(lockEditor);
   const [editMode, setEditMode] = useState(false);
   const [showUnlock, setShowUnlock] = useState(false);
   const [password, setPassword] = useState("");
