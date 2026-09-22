@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicUploadCatalogImageRouteImport } from './routes/api/public/upload-catalog-image'
 import { Route as ApiPublicCatalogImageSplatRouteImport } from './routes/api/public/catalog-image/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -17,6 +18,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicUploadCatalogImageRoute =
+  ApiPublicUploadCatalogImageRouteImport.update({
+    id: '/api/public/upload-catalog-image',
+    path: '/api/public/upload-catalog-image',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCatalogImageSplatRoute =
   ApiPublicCatalogImageSplatRouteImport.update({
     id: '/api/public/catalog-image/$',
@@ -26,27 +33,36 @@ const ApiPublicCatalogImageSplatRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/public/upload-catalog-image': typeof ApiPublicUploadCatalogImageRoute
   '/api/public/catalog-image/$': typeof ApiPublicCatalogImageSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/public/upload-catalog-image': typeof ApiPublicUploadCatalogImageRoute
   '/api/public/catalog-image/$': typeof ApiPublicCatalogImageSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/public/upload-catalog-image': typeof ApiPublicUploadCatalogImageRoute
   '/api/public/catalog-image/$': typeof ApiPublicCatalogImageSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/public/catalog-image/$'
+  fullPaths:
+    '/' | '/api/public/upload-catalog-image' | '/api/public/catalog-image/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/public/catalog-image/$'
-  id: '__root__' | '/' | '/api/public/catalog-image/$'
+  to: '/' | '/api/public/upload-catalog-image' | '/api/public/catalog-image/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/api/public/upload-catalog-image'
+    | '/api/public/catalog-image/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiPublicUploadCatalogImageRoute: typeof ApiPublicUploadCatalogImageRoute
   ApiPublicCatalogImageSplatRoute: typeof ApiPublicCatalogImageSplatRoute
 }
 
@@ -57,6 +73,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/upload-catalog-image': {
+      id: '/api/public/upload-catalog-image'
+      path: '/api/public/upload-catalog-image'
+      fullPath: '/api/public/upload-catalog-image'
+      preLoaderRoute: typeof ApiPublicUploadCatalogImageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/catalog-image/$': {
@@ -71,6 +94,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiPublicUploadCatalogImageRoute: ApiPublicUploadCatalogImageRoute,
   ApiPublicCatalogImageSplatRoute: ApiPublicCatalogImageSplatRoute,
 }
 export const routeTree = rootRouteImport

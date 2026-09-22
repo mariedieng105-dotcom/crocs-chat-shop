@@ -77,23 +77,27 @@ export function useStore() {
   const [hydrated, setHydrated] = useState(false);
   const [saving, setSaving] = useState(false);
   const pending = useRef(0);
-  const fetchCatalog = useServerFn(getCatalog);
-  const persistCatalog = useServerFn(saveCatalog);
+  const fetchCatalog = useCallback(async () => {
+    const { data: row, error } = await supabase.from("store_catalog").select("data").eq("id", "main").maybeSingle();
+    if (error) return null;
+    return (row?.data ?? null) as StoreData | null;
+  }, []);
 
   const refresh = useCallback(async () => {
     if (pending.current > 0) return;
     const stored = await fetchCatalog();
     if (pending.current > 0) return;
-    if (stored) setData(normalizeCatalog(stored as StoreData));
+    if (stored) setData(normalizeCatalog(stored));
   }, [fetchCatalog]);
 
   useEffect(() => {
     let active = true;
     fetchCatalog().then((stored) => {
-      if (active && stored) setData(normalizeCatalog(stored as StoreData));
+      if (active && stored) setData(normalizeCatalog(stored));
     }).finally(() => { if (active) setHydrated(true); });
     return () => { active = false; };
   }, [fetchCatalog]);
+
 
   // Synchronisation en direct (temps réel) pour tous les visiteurs
   useEffect(() => {
