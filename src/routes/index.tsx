@@ -69,7 +69,14 @@ function Index() {
     ? data.products.filter((product) => [product.name, product.model, ...product.colors, ...product.sizes, String(product.price)].join(" ").toLowerCase().includes(query))
     : data.products;
 
-  useEffect(() => { status().then(({ unlocked }) => setEditMode(unlocked)).catch(() => {}); }, [status]);
+  useEffect(() => {
+    const saved = getEditorPassword();
+    if (!saved) return;
+    void supabase.rpc("check_editor_password", { p_password: saved }).then(({ data: ok }) => {
+      if (ok === true) setEditMode(true);
+      else clearEditorPassword();
+    });
+  }, []);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -78,7 +85,7 @@ function Index() {
 
   const requestEdit = async () => {
     if (editMode) {
-      await lock();
+      clearEditorPassword();
       setEditMode(false);
       return;
     }
@@ -88,17 +95,19 @@ function Index() {
   const submitPassword = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setServerError("");
-    try {
-      const result = await unlock({ data: { password } });
-      if (!result.ok) { setPasswordError(true); return; }
-      setPassword("");
-      setPasswordError(false);
-      setShowUnlock(false);
-      setEditMode(true);
-    } catch {
-      setServerError("Le mode édition n’est disponible que sur le site Lovable (crocs-chat-shop.lovable.app).");
+    const { data: ok, error } = await supabase.rpc("check_editor_password", { p_password: password });
+    if (error) {
+      setServerError("Connexion impossible, vérifiez votre réseau puis réessayez.");
+      return;
     }
+    if (ok !== true) { setPasswordError(true); return; }
+    setEditorPassword(password);
+    setPassword("");
+    setPasswordError(false);
+    setShowUnlock(false);
+    setEditMode(true);
   };
+
 
 
   const setText = (key: string, value: string) => update((current) => ({ ...current, texts: { ...current.texts, [key]: value } }));
