@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import limeAsset from "@/assets/crocs-lime.jpg.asset.json";
 import pinkAsset from "@/assets/crocs-pink.jpg.asset.json";
 import navyAsset from "@/assets/crocs-navy.jpg.asset.json";
 import kidsAsset from "@/assets/crocs-kids.jpg.asset.json";
-import { getCatalog, saveCatalog } from "@/lib/catalog.functions";
+import { getEditorPassword } from "@/lib/editor-session";
 import { supabase } from "@/integrations/supabase/client";
+
 
 export const WHATSAPP_NUMBER = "221783817581";
 export const IMAGE_ORIGIN = "https://crocs-chat-shop.lovable.app";
@@ -77,23 +77,27 @@ export function useStore() {
   const [hydrated, setHydrated] = useState(false);
   const [saving, setSaving] = useState(false);
   const pending = useRef(0);
-  const fetchCatalog = useServerFn(getCatalog);
-  const persistCatalog = useServerFn(saveCatalog);
+  const fetchCatalog = useCallback(async () => {
+    const { data: row, error } = await supabase.from("store_catalog").select("data").eq("id", "main").maybeSingle();
+    if (error) return null;
+    return (row?.data ?? null) as StoreData | null;
+  }, []);
 
   const refresh = useCallback(async () => {
     if (pending.current > 0) return;
     const stored = await fetchCatalog();
     if (pending.current > 0) return;
-    if (stored) setData(normalizeCatalog(stored as StoreData));
+    if (stored) setData(normalizeCatalog(stored));
   }, [fetchCatalog]);
 
   useEffect(() => {
     let active = true;
     fetchCatalog().then((stored) => {
-      if (active && stored) setData(normalizeCatalog(stored as StoreData));
+      if (active && stored) setData(normalizeCatalog(stored));
     }).finally(() => { if (active) setHydrated(true); });
     return () => { active = false; };
   }, [fetchCatalog]);
+
 
   // Synchronisation en direct (temps réel) pour tous les visiteurs
   useEffect(() => {
@@ -124,11 +128,14 @@ export function useStore() {
   const persist = useCallback((value: StoreData) => {
     pending.current += 1;
     setSaving(true);
-    void persistCatalog({ data: value }).finally(() => {
-      pending.current -= 1;
-      if (pending.current === 0) setSaving(false);
-    });
-  }, [persistCatalog]);
+    void supabase
+      .rpc("save_catalog", { p_password: getEditorPassword(), p_data: value as unknown as never })
+      .then(() => {
+        pending.current -= 1;
+        if (pending.current === 0) setSaving(false);
+      });
+  }, []);
+
 
   const update = useCallback((next: StoreData | ((current: StoreData) => StoreData)) => {
     setData((current) => {

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, Lock, Plus, Search, Settings2 } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
 import logoAsset from "@/assets/logo.jpg.asset.json";
 import limeAsset from "@/assets/crocs-lime.jpg.asset.json";
 import { Button } from "@/components/ui/button";
@@ -10,8 +9,10 @@ import { ProductDetail } from "@/components/ProductDetail";
 import { ProductEditor } from "@/components/ProductEditor";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { InstagramIcon, MailIcon, SnapchatIcon, TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
-import { getEditorStatus, lockEditor, unlockEditor } from "@/lib/catalog.functions";
+import { supabase } from "@/integrations/supabase/client";
+import { clearEditorPassword, getEditorPassword, setEditorPassword } from "@/lib/editor-session";
 import { resolveImageUrl, useStore, waLink, WHATSAPP_NUMBER, type Product } from "@/lib/store";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -53,9 +54,6 @@ const STORE_EMAIL = "diabystore02@gmail.com";
 
 function Index() {
   const { data, update, hydrated } = useStore();
-  const status = useServerFn(getEditorStatus);
-  const unlock = useServerFn(unlockEditor);
-  const lock = useServerFn(lockEditor);
   const [editMode, setEditMode] = useState(false);
   const [showUnlock, setShowUnlock] = useState(false);
   const [password, setPassword] = useState("");
@@ -71,7 +69,14 @@ function Index() {
     ? data.products.filter((product) => [product.name, product.model, ...product.colors, ...product.sizes, String(product.price)].join(" ").toLowerCase().includes(query))
     : data.products;
 
-  useEffect(() => { status().then(({ unlocked }) => setEditMode(unlocked)).catch(() => {}); }, [status]);
+  useEffect(() => {
+    const saved = getEditorPassword();
+    if (!saved) return;
+    void supabase.rpc("check_editor_password", { p_password: saved }).then(({ data: ok }) => {
+      if (ok === true) setEditMode(true);
+      else clearEditorPassword();
+    });
+  }, []);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -80,7 +85,7 @@ function Index() {
 
   const requestEdit = async () => {
     if (editMode) {
-      await lock();
+      clearEditorPassword();
       setEditMode(false);
       return;
     }
@@ -90,17 +95,19 @@ function Index() {
   const submitPassword = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setServerError("");
-    try {
-      const result = await unlock({ data: { password } });
-      if (!result.ok) { setPasswordError(true); return; }
-      setPassword("");
-      setPasswordError(false);
-      setShowUnlock(false);
-      setEditMode(true);
-    } catch {
-      setServerError("Le mode édition n’est disponible que sur le site Lovable (crocs-chat-shop.lovable.app).");
+    const { data: ok, error } = await supabase.rpc("check_editor_password", { p_password: password });
+    if (error) {
+      setServerError("Connexion impossible, vérifiez votre réseau puis réessayez.");
+      return;
     }
+    if (ok !== true) { setPasswordError(true); return; }
+    setEditorPassword(password);
+    setPassword("");
+    setPasswordError(false);
+    setShowUnlock(false);
+    setEditMode(true);
   };
+
 
 
   const setText = (key: string, value: string) => update((current) => ({ ...current, texts: { ...current.texts, [key]: value } }));
