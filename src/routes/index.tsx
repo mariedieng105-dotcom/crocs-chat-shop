@@ -60,6 +60,8 @@ function Index() {
   const [showUnlock, setShowUnlock] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+  const [serverError, setServerError] = useState("");
+
   const [editing, setEditing] = useState<Product | null>(null);
   const [selected, setSelected] = useState<Product | null>(null);
   const [search, setSearch] = useState("");
@@ -69,7 +71,12 @@ function Index() {
     ? data.products.filter((product) => [product.name, product.model, ...product.colors, ...product.sizes, String(product.price)].join(" ").toLowerCase().includes(query))
     : data.products;
 
-  useEffect(() => { status().then(({ unlocked }) => setEditMode(unlocked)); }, [status]);
+  useEffect(() => { status().then(({ unlocked }) => setEditMode(unlocked)).catch(() => {}); }, [status]);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("admin") === "1" || window.location.hash === "#admin") setShowUnlock(true);
+  }, []);
 
   const requestEdit = async () => {
     if (editMode) {
@@ -82,13 +89,19 @@ function Index() {
 
   const submitPassword = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const result = await unlock({ data: { password } });
-    if (!result.ok) { setPasswordError(true); return; }
-    setPassword("");
-    setPasswordError(false);
-    setShowUnlock(false);
-    setEditMode(true);
+    setServerError("");
+    try {
+      const result = await unlock({ data: { password } });
+      if (!result.ok) { setPasswordError(true); return; }
+      setPassword("");
+      setPasswordError(false);
+      setShowUnlock(false);
+      setEditMode(true);
+    } catch {
+      setServerError("Le mode édition n’est disponible que sur le site Lovable (crocs-chat-shop.lovable.app).");
+    }
   };
+
 
   const setText = (key: string, value: string) => update((current) => ({ ...current, texts: { ...current.texts, [key]: value } }));
   const saveProduct = (product: Product) => {
