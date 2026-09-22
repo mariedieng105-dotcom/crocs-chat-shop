@@ -37,7 +37,7 @@ export function ProductEditor({ initial, onSave, onClose }: { initial: Product; 
         reader.onerror = () => reject(new Error("read"));
         reader.readAsDataURL(file);
       })));
-      const { urls } = await upload({ data: { files: dataUrls.map((dataUrl, i) => ({ name: files[i]?.name ?? `photo-${i}.jpg`, dataUrl })) } });
+      const { urls } = await uploadImages(dataUrls.map((dataUrl, i) => ({ name: files[i]?.name ?? `photo-${i}.jpg`, dataUrl })));
       const images = [...(product.images ?? []), ...urls];
       set({ image: product.images?.length ? product.image : (urls[0] ?? product.image), images });
     } catch {
