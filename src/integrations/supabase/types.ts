@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      editor_secret: {
+        Row: {
+          id: string
+          password_hash: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          password_hash: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          password_hash?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       store_catalog: {
         Row: {
           data: Json
@@ -37,7 +55,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_editor_password: { Args: { p_password: string }; Returns: boolean }
+      save_catalog: {
+        Args: { p_data: Json; p_password: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
