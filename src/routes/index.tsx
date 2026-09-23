@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Check, Lock, Plus, Search, Settings2 } from "lucide-react";
+import { Lock, Menu, Plus, Search, Settings2, X } from "lucide-react";
 import logoAsset from "@/assets/logo.jpg.asset.json";
 import limeAsset from "@/assets/crocs-lime.jpg.asset.json";
 import { Button } from "@/components/ui/button";
@@ -59,6 +59,7 @@ function Index() {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [editing, setEditing] = useState<Product | null>(null);
   const [selected, setSelected] = useState<Product | null>(null);
@@ -125,11 +126,13 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <a href="#accueil" className="flex min-w-0 items-center gap-3"><img src={resolveImageUrl(logoAsset.url)} alt="Logo Diaby Store" className="h-10 w-10 shrink-0 rounded-full object-cover" /><span className="truncate font-display text-base font-bold sm:text-lg">DIABY STORE</span></a>
-          <nav className="flex items-center gap-4 text-sm font-semibold"><a href="#boutique" className="hidden sm:inline">Boutique</a><a href="#apropos" className="hidden sm:inline">À propos</a></nav>
+      <header className="sticky top-0 z-30 border-b border-primary-foreground/10 bg-ink text-primary-foreground shadow-lg">
+        <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 md:flex md:justify-between">
+          <a href="#accueil" className="flex min-w-0 items-center gap-3" onClick={() => setMobileMenuOpen(false)}><img src={resolveImageUrl(logoAsset.url)} alt="Logo Diaby Store" className="h-12 w-12 shrink-0 object-cover sm:h-14 sm:w-14" /><span className="truncate font-display text-lg font-bold sm:text-xl">CROCSDKR</span></a>
+          <nav className="hidden items-center gap-7 text-sm font-bold md:flex"><a href="#accueil" className="transition hover:text-turquoise">Accueil</a><a href="#boutique" className="transition hover:text-turquoise">Boutique</a><a href="#apropos" className="transition hover:text-turquoise">À propos</a><Button asChild className="bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90"><a href={waLink("Bonjour Diaby Store, je veux des infos sur vos Crocs.")} target="_blank" rel="noreferrer"><WhatsAppIcon />Commander</a></Button></nav>
+          <Button type="button" variant="ghost" size="icon" className="shrink-0 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground md:hidden" onClick={() => setMobileMenuOpen((open) => !open)} aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"} aria-expanded={mobileMenuOpen}>{mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</Button>
         </div>
+        {mobileMenuOpen && <nav className="border-t border-primary-foreground/10 px-4 py-3 md:hidden"><div className="mx-auto grid max-w-6xl gap-1 text-sm font-bold"><a href="#accueil" onClick={() => setMobileMenuOpen(false)} className="py-2">Accueil</a><a href="#boutique" onClick={() => setMobileMenuOpen(false)} className="py-2">Boutique</a><a href="#apropos" onClick={() => setMobileMenuOpen(false)} className="py-2">À propos</a><a href={waLink("Bonjour Diaby Store, je veux des infos sur vos Crocs.")} target="_blank" rel="noreferrer" className="flex items-center gap-2 py-2 text-turquoise"><WhatsAppIcon className="h-5 w-5" />Commander sur WhatsApp</a></div></nav>}
       </header>
 
       {editMode && <div className="border-b border-orange-pop bg-orange-pop/10"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3"><p className="text-sm font-bold text-orange-pop">Mode édition partagé actif</p><div className="flex gap-2"><Button size="sm" onClick={addProduct}><Plus />Nouveau produit</Button><Button size="sm" variant="outline" onClick={requestEdit}><Lock />Verrouiller</Button></div></div></div>}
@@ -147,7 +150,7 @@ function Index() {
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Rechercher un modèle, une couleur, une pointure…" aria-label="Rechercher un produit" className="h-11 w-full border border-input bg-background pl-9 pr-3 text-sm text-foreground" />
         </div>
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{hydrated && visibleProducts.map((product) => <ProductCard key={product.id} product={product} editMode={editMode} onOpen={() => setSelected(product)} onEdit={() => setEditing(product)} onDelete={() => update((current) => ({ ...current, products: current.products.filter((item) => item.id !== product.id) }))} />)}</div>
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">{hydrated && visibleProducts.map((product) => <ProductCard key={product.id} product={product} editMode={editMode} onOpen={() => setSelected(product)} onEdit={() => setEditing(product)} onDelete={() => update((current) => ({ ...current, products: current.products.filter((item) => item.id !== product.id) }))} />)}</div>
         {hydrated && visibleProducts.length === 0 && <p className="mt-8 text-center text-muted-foreground">{data.products.length === 0 ? "Aucun produit pour le moment." : `Aucun résultat pour « ${search} ».`}</p>}
       </section>
 
