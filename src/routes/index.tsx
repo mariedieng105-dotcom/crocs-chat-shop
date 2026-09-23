@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Lock, Menu, Plus, Search, Settings2, X } from "lucide-react";
+import { ArrowRight, Lock, Menu, Plus, Search, Settings2, X } from "lucide-react";
 import logoAsset from "@/assets/logo.jpg.asset.json";
 import limeAsset from "@/assets/crocs-lime.jpg.asset.json";
 import { Button } from "@/components/ui/button";
