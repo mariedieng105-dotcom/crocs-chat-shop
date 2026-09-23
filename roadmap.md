@@ -1,6 +1,6 @@
 # Catégories de la boutique
 - [x] Regrouper les Crocs par catégorie sans modifier les produits ni les images
-- [ ] Vérifier le rendu mobile, la recherche et l’ouverture des fiches produit
+- [x] Vérifier le rendu mobile, la recherche et l’ouverture des fiches produit
 - [ ] Publier la mise à jour
 
 # Roadmap
