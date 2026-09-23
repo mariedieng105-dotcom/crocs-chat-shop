@@ -52,6 +52,25 @@ const SOCIALS = [
 
 const STORE_EMAIL = "diabystore02@gmail.com";
 
+const PRODUCT_CATEGORIES = [
+  { key: "classic", title: "CROCS CLASSIC", subtitle: "Le modèle emblématique" },
+  { key: "spiderman", title: "CROCS SPIDERMAN", subtitle: "L’univers Marvel à vos pieds" },
+  { key: "collaboration", title: "CROCS COLLABORATION", subtitle: "Les éditions spéciales" },
+  { key: "sandals", title: "SANDALES", subtitle: "Légères et confortables" },
+  { key: "pins", title: "PINS", subtitle: "Personnalisez vos Crocs" },
+  { key: "other", title: "AUTRES MODÈLES", subtitle: "Découvrez toute la collection" },
+] as const;
+
+function getProductCategory(product: Product) {
+  const value = `${product.name} ${product.model}`.toLowerCase();
+  if (value.includes("pins")) return "pins";
+  if (value.includes("sandal") || value.includes("saturday") || value.includes("saturdy")) return "sandals";
+  if (value.includes("spiderman") || value.includes("spider-man")) return "spiderman";
+  if (/collaboration|colloboration|naruto|star wars|bape|disney|nfl|batman|jujutsu|one pice|one piece|flash mcqueen/.test(value)) return "collaboration";
+  if (value.includes("classic")) return "classic";
+  return "other";
+}
+
 function Index() {
   const { data, update, hydrated } = useStore();
   const [editMode, setEditMode] = useState(false);
@@ -69,6 +88,10 @@ function Index() {
   const visibleProducts = query
     ? data.products.filter((product) => [product.name, product.model, ...product.colors, ...product.sizes, String(product.price)].join(" ").toLowerCase().includes(query))
     : data.products;
+  const productSections = PRODUCT_CATEGORIES.map((category) => ({
+    ...category,
+    products: visibleProducts.filter((product) => getProductCategory(product) === category.key),
+  })).filter((category) => category.products.length > 0);
 
   useEffect(() => {
     const saved = getEditorPassword();
@@ -150,7 +173,15 @@ function Index() {
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Rechercher un modèle, une couleur, une pointure…" aria-label="Rechercher un produit" className="h-11 w-full border border-input bg-background pl-9 pr-3 text-sm text-foreground" />
         </div>
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">{hydrated && visibleProducts.map((product) => <ProductCard key={product.id} product={product} editMode={editMode} onOpen={() => setSelected(product)} onEdit={() => setEditing(product)} onDelete={() => update((current) => ({ ...current, products: current.products.filter((item) => item.id !== product.id) }))} />)}</div>
+        {hydrated && productSections.map((category) => (
+          <section key={category.key} className="mt-12 first:mt-8" aria-labelledby={`category-${category.key}`}>
+            <div className="mb-6 text-center">
+              <h3 id={`category-${category.key}`} className="font-display text-2xl leading-tight sm:text-4xl">{category.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground sm:text-base">{category.subtitle}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">{category.products.map((product) => <ProductCard key={product.id} product={product} editMode={editMode} onOpen={() => setSelected(product)} onEdit={() => setEditing(product)} onDelete={() => update((current) => ({ ...current, products: current.products.filter((item) => item.id !== product.id) }))} />)}</div>
+          </section>
+        ))}
         {hydrated && visibleProducts.length === 0 && <p className="mt-8 text-center text-muted-foreground">{data.products.length === 0 ? "Aucun produit pour le moment." : `Aucun résultat pour « ${search} ».`}</p>}
       </section>
 
