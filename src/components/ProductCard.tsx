@@ -13,7 +13,7 @@ export function ProductCard({ product, editMode, onOpen, onEdit, onDelete }: { p
         </div>
         <div className="p-3 sm:p-4"><p className="truncate text-[10px] font-semibold uppercase text-muted-foreground sm:text-xs">{product.model}</p><h3 className="mt-1 line-clamp-2 min-h-10 text-sm font-bold sm:min-h-0 sm:text-lg">{product.name}</h3><p className="mt-2 text-base font-extrabold text-orange-pop sm:text-xl">{formatPrice(product.price)}</p></div>
       </button>
-      {editMode && <div className="flex gap-2 border-t border-border p-2 sm:p-3"><Button variant="outline" size="sm" className="min-w-0 flex-1 px-2" onClick={onEdit}><Pencil /><span className="hidden sm:inline">Modifier</span></Button><Button variant="destructive" size="icon-sm" onClick={onDelete} aria-label="Supprimer"><Trash2 /></Button></div>}
+      {editMode && <div className="flex gap-2 border-t border-border p-2 sm:p-3"><Button variant="outline" size="sm" className="min-w-0 flex-1 px-2" onClick={onEdit}><Pencil /><span className="hidden sm:inline">Modifier</span></Button><Button variant="destructive" size="icon" className="h-8 w-8 shrink-0" onClick={onDelete} aria-label="Supprimer"><Trash2 /></Button></div>}
     </article>
   );
 }
