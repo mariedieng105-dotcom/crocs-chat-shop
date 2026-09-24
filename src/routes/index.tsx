@@ -175,21 +175,21 @@ function Index() {
       {editMode && <div className="border-b border-orange-pop bg-orange-pop/10"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3"><p className="text-sm font-bold text-orange-pop">Mode édition partagé actif</p><div className="flex gap-2"><Button size="sm" onClick={addProduct}><Plus />Nouveau produit</Button><Button size="sm" variant="outline" onClick={requestEdit}><Lock />Verrouiller</Button></div></div></div>}
 
       <section id="accueil" className="overflow-hidden border-b border-border bg-secondary">
-        <div className="mx-auto grid min-h-[540px] max-w-7xl items-stretch lg:grid-cols-[43%_57%]">
-          <div className="z-10 flex min-w-0 flex-col justify-center px-5 py-12 sm:px-8 lg:px-6 lg:py-16">
+        <div className="mx-auto grid max-w-7xl items-stretch lg:min-h-[540px] lg:grid-cols-[43%_57%]">
+          <div className="z-10 flex min-w-0 flex-col justify-center px-5 py-9 sm:px-8 sm:py-12 lg:px-6 lg:py-16">
             <span className="mb-2 text-xs font-bold uppercase text-ink">CROCS_DAKAR_221</span>
-            <EditableText name="heroTitle" as="h1" className="break-words text-4xl leading-[1.04] text-ink sm:text-6xl lg:text-7xl" />
+            <EditableText name="heroTitle" as="h1" className="break-words text-3xl leading-[1.04] text-ink sm:text-5xl lg:text-4xl xl:text-5xl" />
             <EditableText name="heroSlogan" className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg" />
             <div className="mt-7"><Button asChild size="lg" className="rounded-lg bg-ink px-6 text-primary-foreground hover:bg-ink/90"><a href="#boutique">{texts["heroCta"]}<ArrowRight /></a></Button></div>
-            <div className="mt-10 grid grid-cols-3 gap-3 border-t border-border pt-5 text-[10px] font-bold text-ink sm:text-xs">
+            <div className="mt-8 grid grid-cols-3 gap-3 border-t border-border pt-5 text-[10px] font-bold text-ink sm:mt-10 sm:text-xs">
               <span className="flex items-center gap-2"><ShieldCheck className="h-5 w-5 shrink-0" />100% originaux</span>
               <span className="flex items-center gap-2"><Truck className="h-5 w-5 shrink-0" />Livraison partout</span>
               <span className="flex items-center gap-2"><CreditCard className="h-5 w-5 shrink-0" />Paiement à la livraison</span>
             </div>
           </div>
-          <div className="relative min-h-[320px] overflow-hidden bg-background lg:min-h-[540px]">
+          <div className="relative h-[280px] overflow-hidden bg-background sm:h-[360px] lg:h-auto lg:min-h-[540px]">
             <div className="absolute inset-5 border border-border bg-secondary/60 sm:inset-8" />
-            <img src={resolveImageUrl(limeAsset.url)} alt="Crocs authentiques disponibles chez Diaby Store" width={1200} height={900} className="relative h-full min-h-[320px] w-full object-contain p-8 sm:p-12 lg:min-h-[540px] lg:p-16" />
+            <img src={resolveImageUrl(limeAsset.url)} alt="Crocs authentiques disponibles chez Diaby Store" width={1200} height={900} className="relative h-full w-full object-contain p-8 sm:p-12 lg:min-h-[540px] lg:p-16" />
             <span className="absolute bottom-6 right-6 hidden max-w-40 text-right font-display text-xl leading-tight text-ink sm:block">DU STYLE À CHAQUE PAS</span>
           </div>
         </div>

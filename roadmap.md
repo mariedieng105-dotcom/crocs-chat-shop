@@ -5,7 +5,7 @@
 
 # Refonte de l’accueil
 - [x] Reprendre l’en-tête et la bannière selon l’image de référence
-- [ ] Vérifier le rendu mobile et ordinateur sans régression
+- [x] Vérifier le rendu mobile et ordinateur sans régression
 - [ ] Publier la mise à jour
 
 # Roadmap
