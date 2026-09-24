@@ -8,6 +8,10 @@
 - [x] Vérifier le rendu mobile et ordinateur sans régression
 - [x] Publier la mise à jour
 
+# Ajustement fidèle de l’accueil
+- [x] Aligner précisément l’en-tête et la bannière sur la nouvelle référence
+- [x] Vérifier l’affichage ordinateur et mobile sans modifier la boutique
+
 # Roadmap
 
 - [x] Activer le catalogue partagé
