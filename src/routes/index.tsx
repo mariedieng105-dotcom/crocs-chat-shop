@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Lock, Menu, Plus, Search, Settings2, X } from "lucide-react";
+import { ArrowRight, CreditCard, Heart, Lock, MapPin, Menu, Plus, Search, Settings2, ShieldCheck, ShoppingBag, Truck, X } from "lucide-react";
 import logoAsset from "@/assets/logo.jpg.asset.json";
 import limeAsset from "@/assets/crocs-lime.jpg.asset.json";
 import { Button } from "@/components/ui/button";
@@ -149,21 +149,49 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-primary-foreground/10 bg-ink text-primary-foreground shadow-lg">
-        <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 md:flex md:justify-between">
-          <a href="#accueil" className="flex min-w-0 items-center gap-3" onClick={() => setMobileMenuOpen(false)}><img src={resolveImageUrl(logoAsset.url)} alt="Logo Diaby Store" className="h-12 w-12 shrink-0 object-cover sm:h-14 sm:w-14" /><span className="truncate font-display text-lg font-bold sm:text-xl">CROCSDKR</span></a>
-          <nav className="hidden items-center gap-7 text-sm font-bold md:flex"><a href="#accueil" className="transition hover:text-turquoise">Accueil</a><a href="#boutique" className="transition hover:text-turquoise">Boutique</a><a href="#apropos" className="transition hover:text-turquoise">À propos</a><Button asChild className="bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90"><a href={waLink("Bonjour Diaby Store, je veux des infos sur vos Crocs.")} target="_blank" rel="noreferrer"><WhatsAppIcon />Commander</a></Button></nav>
-          <Button type="button" variant="ghost" size="icon" className="shrink-0 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground md:hidden" onClick={() => setMobileMenuOpen((open) => !open)} aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"} aria-expanded={mobileMenuOpen}>{mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</Button>
+      <header className="sticky top-0 z-30 bg-background shadow-sm">
+        <div className="hidden bg-ink text-primary-foreground lg:block">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[11px] font-semibold">
+            <span className="flex items-center gap-2"><Truck className="h-4 w-4" />Livraison partout au Sénégal</span>
+            <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" />Produits 100% originaux</span>
+            <span className="flex items-center gap-2"><CreditCard className="h-4 w-4" />Paiement à la livraison</span>
+            <span className="flex items-center gap-2"><MapPin className="h-4 w-4" />Dakar, Sénégal</span>
+          </div>
         </div>
-        {mobileMenuOpen && <nav className="border-t border-primary-foreground/10 px-4 py-3 md:hidden"><div className="mx-auto grid max-w-6xl gap-1 text-sm font-bold"><a href="#accueil" onClick={() => setMobileMenuOpen(false)} className="py-2">Accueil</a><a href="#boutique" onClick={() => setMobileMenuOpen(false)} className="py-2">Boutique</a><a href="#apropos" onClick={() => setMobileMenuOpen(false)} className="py-2">À propos</a><a href={waLink("Bonjour Diaby Store, je veux des infos sur vos Crocs.")} target="_blank" rel="noreferrer" className="flex items-center gap-2 py-2 text-turquoise"><WhatsAppIcon className="h-5 w-5" />Commander sur WhatsApp</a></div></nav>}
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 lg:px-6 lg:py-3">
+          <a href="#accueil" className="flex min-w-0 items-center gap-3" onClick={() => setMobileMenuOpen(false)}><img src={resolveImageUrl(logoAsset.url)} alt="Logo Crocs Dakar 221 — Diaby Store" className="h-14 w-14 shrink-0 object-cover lg:h-20 lg:w-20" /><span className="truncate font-display text-base text-ink sm:text-lg lg:hidden">CROCSDKR</span></a>
+          <nav className="hidden items-center gap-9 text-sm font-bold text-ink lg:flex"><a href="#accueil" className="border-b-2 border-ink py-2">Accueil</a><a href="#boutique" className="py-2 transition hover:text-turquoise">Boutique</a><a href="#apropos" className="py-2 transition hover:text-turquoise">À propos</a></nav>
+          <div className="hidden items-center gap-2 lg:flex">
+            <a href="#boutique" aria-label="Rechercher dans la boutique" className="grid h-10 w-10 place-items-center text-ink transition hover:text-turquoise"><Search className="h-5 w-5" /></a>
+            <a href="#boutique" aria-label="Voir les favoris" className="grid h-10 w-10 place-items-center text-ink transition hover:text-turquoise"><Heart className="h-5 w-5" /></a>
+            <a href="#boutique" aria-label="Voir la boutique" className="grid h-10 w-10 place-items-center text-ink transition hover:text-turquoise"><ShoppingBag className="h-5 w-5" /></a>
+            <Button asChild className="ml-2 rounded-full bg-ink px-5 text-primary-foreground hover:bg-ink/90"><a href={waLink("Bonjour Diaby Store, je veux des infos sur vos Crocs.")} target="_blank" rel="noreferrer"><WhatsAppIcon />Commander sur WhatsApp</a></Button>
+          </div>
+          <Button type="button" variant="ghost" size="icon" className="shrink-0 text-ink hover:bg-secondary hover:text-ink lg:hidden" onClick={() => setMobileMenuOpen((open) => !open)} aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"} aria-expanded={mobileMenuOpen}>{mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</Button>
+        </div>
+        {mobileMenuOpen && <nav className="border-t border-border bg-background px-4 py-3 lg:hidden"><div className="mx-auto grid max-w-7xl gap-1 text-sm font-bold text-ink"><a href="#accueil" onClick={() => setMobileMenuOpen(false)} className="py-2">Accueil</a><a href="#boutique" onClick={() => setMobileMenuOpen(false)} className="py-2">Boutique</a><a href="#apropos" onClick={() => setMobileMenuOpen(false)} className="py-2">À propos</a><a href={waLink("Bonjour Diaby Store, je veux des infos sur vos Crocs.")} target="_blank" rel="noreferrer" className="flex items-center gap-2 py-2 text-turquoise"><WhatsAppIcon className="h-5 w-5" />Commander sur WhatsApp</a></div></nav>}
       </header>
 
       {editMode && <div className="border-b border-orange-pop bg-orange-pop/10"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3"><p className="text-sm font-bold text-orange-pop">Mode édition partagé actif</p><div className="flex gap-2"><Button size="sm" onClick={addProduct}><Plus />Nouveau produit</Button><Button size="sm" variant="outline" onClick={requestEdit}><Lock />Verrouiller</Button></div></div></div>}
 
-      <section id="accueil" className="overflow-hidden border-b border-border">
-        <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-12 md:grid-cols-2 md:py-16">
-          <div className="min-w-0 space-y-5"><span className="text-xs font-bold uppercase text-turquoise">Dakar, Sénégal</span><EditableText name="heroTitle" as="h1" className="break-words text-3xl leading-tight sm:text-5xl md:text-6xl" /><EditableText name="heroSlogan" className="text-base text-muted-foreground sm:text-lg" /><div className="flex flex-wrap gap-3"><Button asChild size="lg" className="bg-orange-pop text-primary-foreground hover:bg-orange-pop/90"><a href="#boutique">{texts["heroCta"]}</a></Button><Button asChild size="lg" variant="outline"><a href={waLink("Bonjour Diaby Store, je veux des infos sur vos Crocs.")} target="_blank" rel="noreferrer">Nous écrire</a></Button></div></div>
-          <img src={resolveImageUrl(logoAsset.url)} alt="CROCS_DAKAR_221 — Diaby Store" width={1280} height={697} className="w-full border border-border object-cover shadow-xl" />
+      <section id="accueil" className="overflow-hidden border-b border-border bg-secondary">
+        <div className="mx-auto grid max-w-7xl items-stretch lg:min-h-[540px] lg:grid-cols-[43%_57%]">
+          <div className="z-10 flex min-w-0 flex-col justify-center px-5 py-9 sm:px-8 sm:py-12 lg:px-6 lg:py-16">
+            <span className="mb-2 text-xs font-bold uppercase text-ink">CROCS_DAKAR_221</span>
+            <EditableText name="heroTitle" as="h1" className="break-words text-3xl leading-[1.04] text-ink sm:text-5xl lg:text-4xl xl:text-5xl" />
+            <EditableText name="heroSlogan" className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg" />
+            <div className="mt-7"><Button asChild size="lg" className="rounded-lg bg-ink px-6 text-primary-foreground hover:bg-ink/90"><a href="#boutique">{texts["heroCta"]}<ArrowRight /></a></Button></div>
+            <div className="mt-8 grid grid-cols-3 gap-3 border-t border-border pt-5 text-[10px] font-bold text-ink sm:mt-10 sm:text-xs">
+              <span className="flex items-center gap-2"><ShieldCheck className="h-5 w-5 shrink-0" />100% originaux</span>
+              <span className="flex items-center gap-2"><Truck className="h-5 w-5 shrink-0" />Livraison partout</span>
+              <span className="flex items-center gap-2"><CreditCard className="h-5 w-5 shrink-0" />Paiement à la livraison</span>
+            </div>
+          </div>
+          <div className="relative h-[280px] overflow-hidden bg-background sm:h-[360px] lg:h-auto lg:min-h-[540px]">
+            <div className="absolute inset-5 border border-border bg-secondary/60 sm:inset-8" />
+            <img src={resolveImageUrl(limeAsset.url)} alt="Crocs authentiques disponibles chez Diaby Store" width={1200} height={900} className="relative h-full w-full object-contain p-8 sm:p-12 lg:min-h-[540px] lg:p-16" />
+            <span className="absolute bottom-6 right-6 hidden max-w-40 text-right font-display text-xl leading-tight text-ink sm:block">DU STYLE À CHAQUE PAS</span>
+          </div>
         </div>
       </section>
 
