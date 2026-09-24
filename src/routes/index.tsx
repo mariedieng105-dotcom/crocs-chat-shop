@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, CreditCard, Heart, Lock, MapPin, Menu, Plus, Search, Settings2, ShieldCheck, ShoppingBag, Truck, X } from "lucide-react";
+import { ArrowRight, CreditCard, Headphones, Heart, Lock, MapPin, Menu, Plus, Search, Settings2, ShieldCheck, ShoppingBag, Truck, X } from "lucide-react";
 import logoAsset from "@/assets/logo.jpg.asset.json";
+import heroLifestyle from "@/assets/crocs-hero-lifestyle.jpg";
 import limeAsset from "@/assets/crocs-lime.jpg.asset.json";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/ProductCard";
@@ -158,9 +159,9 @@ function Index() {
             <span className="flex items-center gap-2"><MapPin className="h-4 w-4" />Dakar, Sénégal</span>
           </div>
         </div>
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 lg:px-6 lg:py-3">
-          <a href="#accueil" className="flex min-w-0 items-center gap-3" onClick={() => setMobileMenuOpen(false)}><img src={resolveImageUrl(logoAsset.url)} alt="Logo Crocs Dakar 221 — Diaby Store" className="h-14 w-14 shrink-0 object-cover lg:h-20 lg:w-20" /><span className="truncate font-display text-base text-ink sm:text-lg lg:hidden">CROCSDKR</span></a>
-          <nav className="hidden items-center gap-9 text-sm font-bold text-ink lg:flex"><a href="#accueil" className="border-b-2 border-ink py-2">Accueil</a><a href="#boutique" className="py-2 transition hover:text-turquoise">Boutique</a><a href="#apropos" className="py-2 transition hover:text-turquoise">À propos</a></nav>
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 lg:min-h-24 lg:px-6 lg:py-0">
+          <a href="#accueil" className="flex min-w-0 items-center gap-3 self-stretch" onClick={() => setMobileMenuOpen(false)}><img src={resolveImageUrl(logoAsset.url)} alt="Logo Crocs Dakar 221 — Diaby Store" className="h-14 w-14 shrink-0 object-contain lg:h-24 lg:w-28" /><span className="truncate font-display text-base text-ink sm:text-lg lg:hidden">CROCSDKR</span></a>
+          <nav className="hidden items-center gap-10 text-sm font-bold text-ink lg:flex"><a href="#accueil" className="border-b-2 border-ink py-3">Accueil</a><a href="#boutique" className="py-3 transition hover:text-turquoise">Boutique</a><a href="#apropos" className="py-3 transition hover:text-turquoise">À propos</a><a href="#contact" className="py-3 transition hover:text-turquoise">Contact</a></nav>
           <div className="hidden items-center gap-2 lg:flex">
             <a href="#boutique" aria-label="Rechercher dans la boutique" className="grid h-10 w-10 place-items-center text-ink transition hover:text-turquoise"><Search className="h-5 w-5" /></a>
             <a href="#boutique" aria-label="Voir les favoris" className="grid h-10 w-10 place-items-center text-ink transition hover:text-turquoise"><Heart className="h-5 w-5" /></a>
@@ -169,28 +170,28 @@ function Index() {
           </div>
           <Button type="button" variant="ghost" size="icon" className="shrink-0 text-ink hover:bg-secondary hover:text-ink lg:hidden" onClick={() => setMobileMenuOpen((open) => !open)} aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"} aria-expanded={mobileMenuOpen}>{mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</Button>
         </div>
-        {mobileMenuOpen && <nav className="border-t border-border bg-background px-4 py-3 lg:hidden"><div className="mx-auto grid max-w-7xl gap-1 text-sm font-bold text-ink"><a href="#accueil" onClick={() => setMobileMenuOpen(false)} className="py-2">Accueil</a><a href="#boutique" onClick={() => setMobileMenuOpen(false)} className="py-2">Boutique</a><a href="#apropos" onClick={() => setMobileMenuOpen(false)} className="py-2">À propos</a><a href={waLink("Bonjour Diaby Store, je veux des infos sur vos Crocs.")} target="_blank" rel="noreferrer" className="flex items-center gap-2 py-2 text-turquoise"><WhatsAppIcon className="h-5 w-5" />Commander sur WhatsApp</a></div></nav>}
+        {mobileMenuOpen && <nav className="border-t border-border bg-background px-4 py-3 lg:hidden"><div className="mx-auto grid max-w-7xl gap-1 text-sm font-bold text-ink"><a href="#accueil" onClick={() => setMobileMenuOpen(false)} className="py-2">Accueil</a><a href="#boutique" onClick={() => setMobileMenuOpen(false)} className="py-2">Boutique</a><a href="#apropos" onClick={() => setMobileMenuOpen(false)} className="py-2">À propos</a><a href="#contact" onClick={() => setMobileMenuOpen(false)} className="py-2">Contact</a><a href={waLink("Bonjour Diaby Store, je veux des infos sur vos Crocs.")} target="_blank" rel="noreferrer" className="flex items-center gap-2 py-2 text-turquoise"><WhatsAppIcon className="h-5 w-5" />Commander sur WhatsApp</a></div></nav>}
       </header>
 
       {editMode && <div className="border-b border-orange-pop bg-orange-pop/10"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3"><p className="text-sm font-bold text-orange-pop">Mode édition partagé actif</p><div className="flex gap-2"><Button size="sm" onClick={addProduct}><Plus />Nouveau produit</Button><Button size="sm" variant="outline" onClick={requestEdit}><Lock />Verrouiller</Button></div></div></div>}
 
-      <section id="accueil" className="overflow-hidden border-b border-border bg-secondary">
-        <div className="mx-auto grid max-w-7xl items-stretch lg:min-h-[540px] lg:grid-cols-[43%_57%]">
-          <div className="z-10 flex min-w-0 flex-col justify-center px-5 py-9 sm:px-8 sm:py-12 lg:px-6 lg:py-16">
+      <section id="accueil" className="overflow-hidden border-b border-border bg-background">
+        <div className="mx-auto grid max-w-7xl items-stretch lg:min-h-[430px] lg:grid-cols-[43%_57%]">
+          <div className="z-10 flex min-w-0 flex-col justify-center px-5 py-9 sm:px-8 sm:py-12 lg:px-6 lg:py-10">
             <span className="mb-2 text-xs font-bold uppercase text-ink">CROCS_DAKAR_221</span>
-            <EditableText name="heroTitle" as="h1" className="break-words text-3xl leading-[1.04] text-ink sm:text-5xl lg:text-4xl xl:text-5xl" />
-            <EditableText name="heroSlogan" className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg" />
-            <div className="mt-7"><Button asChild size="lg" className="rounded-lg bg-ink px-6 text-primary-foreground hover:bg-ink/90"><a href="#boutique">{texts["heroCta"]}<ArrowRight /></a></Button></div>
-            <div className="mt-8 grid grid-cols-3 gap-3 border-t border-border pt-5 text-[10px] font-bold text-ink sm:mt-10 sm:text-xs">
-              <span className="flex items-center gap-2"><ShieldCheck className="h-5 w-5 shrink-0" />100% originaux</span>
-              <span className="flex items-center gap-2"><Truck className="h-5 w-5 shrink-0" />Livraison partout</span>
-              <span className="flex items-center gap-2"><CreditCard className="h-5 w-5 shrink-0" />Paiement à la livraison</span>
+            {editMode ? <EditableText name="heroTitle" as="h1" className="break-words font-serif text-4xl font-medium leading-[0.98] text-ink sm:text-6xl lg:text-5xl xl:text-6xl" /> : <h1 className="break-words font-serif text-4xl font-medium leading-[0.98] text-ink sm:text-6xl lg:text-5xl xl:text-6xl">DU STYLE<br />À CHAQUE PAS</h1>}
+            <EditableText name="heroSlogan" className="mt-3 max-w-md text-sm leading-relaxed text-foreground sm:text-base" />
+            <div className="mt-5"><Button asChild size="lg" className="rounded-lg bg-ink px-6 text-primary-foreground hover:bg-ink/90"><a href="#boutique">{texts["heroCta"]}<ArrowRight /></a></Button></div>
+            <div className="mt-7 grid grid-cols-2 gap-x-4 gap-y-4 border-t border-border pt-5 text-[10px] font-bold text-ink sm:grid-cols-4 sm:text-[11px]">
+              <span className="flex items-center gap-2"><ShieldCheck className="h-5 w-5 shrink-0" />Produits<br />100% originaux</span>
+              <span className="flex items-center gap-2"><Truck className="h-5 w-5 shrink-0" />Livraison<br />partout au Sénégal</span>
+              <span className="flex items-center gap-2"><CreditCard className="h-5 w-5 shrink-0" />Paiement<br />à la livraison</span>
+              <span className="flex items-center gap-2"><Headphones className="h-5 w-5 shrink-0" />Service client<br />réactif</span>
             </div>
           </div>
-          <div className="relative h-[280px] overflow-hidden bg-background sm:h-[360px] lg:h-auto lg:min-h-[540px]">
-            <div className="absolute inset-5 border border-border bg-secondary/60 sm:inset-8" />
-            <img src={resolveImageUrl(limeAsset.url)} alt="Crocs authentiques disponibles chez Diaby Store" width={1200} height={900} className="relative h-full w-full object-contain p-8 sm:p-12 lg:min-h-[540px] lg:p-16" />
-            <span className="absolute bottom-6 right-6 hidden max-w-40 text-right font-display text-xl leading-tight text-ink sm:block">DU STYLE À CHAQUE PAS</span>
+          <div className="relative h-[290px] overflow-hidden bg-secondary sm:h-[390px] lg:h-auto lg:min-h-[430px]">
+            <img src={heroLifestyle} alt="Crocs authentiques disponibles chez Diaby Store" width={1536} height={1024} fetchPriority="high" className="h-full w-full object-cover object-center" />
+            <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-2" aria-hidden="true"><span className="h-2 w-2 rounded-full bg-ink" /><span className="h-2 w-2 rounded-full border border-ink bg-background" /><span className="h-2 w-2 rounded-full border border-ink bg-background" /></div>
           </div>
         </div>
       </section>
@@ -215,7 +216,7 @@ function Index() {
 
       <section id="apropos" className="bg-secondary py-14"><div className="mx-auto max-w-4xl px-4 text-center"><EditableText name="aboutTitle" as="h2" className="text-3xl sm:text-4xl" /><EditableText name="aboutText" className="mx-auto mt-4 max-w-2xl text-muted-foreground" /><div className="mt-8 grid gap-4 sm:grid-cols-3">{["value1", "value2", "value3"].map((name) => <div key={name} className="border-t-4 border-primary bg-background p-5 shadow-sm"><EditableText name={name} className="font-bold" /></div>)}</div></div></section>
 
-      <footer className="bg-ink py-12 text-primary-foreground"><div className="mx-auto grid max-w-6xl gap-8 px-4 sm:grid-cols-3"><div><img src={resolveImageUrl(logoAsset.url)} alt="Diaby Store" className="h-14 w-14 rounded-full object-cover" /><p className="mt-3 text-sm opacity-80">{texts["footerNote"]}</p><a href={`mailto:${STORE_EMAIL}`} className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-turquoise hover:underline"><MailIcon className="h-4 w-4" />{STORE_EMAIL}</a></div><div className="space-y-2 text-sm font-semibold"><p className="uppercase opacity-60">Navigation</p><a href="#accueil" className="block hover:text-turquoise">Accueil</a><a href="#boutique" className="block hover:text-turquoise">Boutique</a><a href="#apropos" className="block hover:text-turquoise">À propos</a></div><div className="space-y-2 text-sm font-semibold"><p className="uppercase opacity-60">Suivez-nous</p><div className="flex flex-wrap gap-3">{SOCIALS.map((social) => { const Icon = social.icon; return <a key={social.label} href={social.href} target="_blank" rel="noreferrer" aria-label={social.label} className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/10 transition hover:bg-whatsapp hover:text-white"><Icon className="h-5 w-5" /></a>; })}</div><Button asChild className="mt-3 bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90"><a href={waLink("Bonjour Diaby Store !")} target="_blank" rel="noreferrer">WhatsApp direct</a></Button></div></div><div className="mx-auto mt-8 max-w-6xl border-t border-primary-foreground/15 px-4 pt-6 text-center text-xs opacity-70">© {new Date().getFullYear()} Diaby Store · CROCS_DAKAR_221 · Tous droits réservés.<br />Site conçu par <a href="https://m2dtech.netlify.app/" target="_blank" rel="noreferrer" className="font-semibold text-turquoise hover:underline">M2D Tech</a></div></footer>
+      <footer id="contact" className="bg-ink py-12 text-primary-foreground"><div className="mx-auto grid max-w-6xl gap-8 px-4 sm:grid-cols-3"><div><img src={resolveImageUrl(logoAsset.url)} alt="Diaby Store" className="h-14 w-14 rounded-full object-cover" /><p className="mt-3 text-sm opacity-80">{texts["footerNote"]}</p><a href={`mailto:${STORE_EMAIL}`} className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-turquoise hover:underline"><MailIcon className="h-4 w-4" />{STORE_EMAIL}</a></div><div className="space-y-2 text-sm font-semibold"><p className="uppercase opacity-60">Navigation</p><a href="#accueil" className="block hover:text-turquoise">Accueil</a><a href="#boutique" className="block hover:text-turquoise">Boutique</a><a href="#apropos" className="block hover:text-turquoise">À propos</a></div><div className="space-y-2 text-sm font-semibold"><p className="uppercase opacity-60">Suivez-nous</p><div className="flex flex-wrap gap-3">{SOCIALS.map((social) => { const Icon = social.icon; return <a key={social.label} href={social.href} target="_blank" rel="noreferrer" aria-label={social.label} className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/10 transition hover:bg-whatsapp hover:text-white"><Icon className="h-5 w-5" /></a>; })}</div><Button asChild className="mt-3 bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90"><a href={waLink("Bonjour Diaby Store !")} target="_blank" rel="noreferrer">WhatsApp direct</a></Button></div></div><div className="mx-auto mt-8 max-w-6xl border-t border-primary-foreground/15 px-4 pt-6 text-center text-xs opacity-70">© {new Date().getFullYear()} Diaby Store · CROCS_DAKAR_221 · Tous droits réservés.<br />Site conçu par <a href="https://m2dtech.netlify.app/" target="_blank" rel="noreferrer" className="font-semibold text-turquoise hover:underline">M2D Tech</a></div></footer>
 
       <button type="button" onClick={requestEdit} aria-label={editMode ? "Verrouiller l'édition" : "Accès édition"} title={editMode ? "Verrouiller l'édition" : "Accès édition"} className="fixed bottom-24 right-3 z-40 grid h-8 w-8 place-items-center rounded-full bg-muted text-muted-foreground opacity-30 transition hover:opacity-90 focus:opacity-90">{editMode ? <Lock className="h-4 w-4" /> : <Settings2 className="h-4 w-4" />}</button>
       <WhatsAppFloat />
